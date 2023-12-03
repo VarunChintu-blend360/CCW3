@@ -46,4 +46,6 @@ st.subheader("Varun Rao Chintu")
 
 
 st.write('Data from Snowflake:')
+
+st.write('Data from Snowflake:')
 st.write(df)
