@@ -3,6 +3,8 @@
 import streamlit as st
 import pandas as pd
 import snowflake.connector
+import matplotlib.pyplot as plt
+
 
 # Snowflake connection parameters
 account = 'vniqwci-jj28244'
@@ -46,6 +48,5 @@ st.subheader("Varun Rao Chintu")
 
 
 st.write('Data from Snowflake:')
+st.dataframe(df)
 
-st.write('Data from Snowflake:')
-st.write(df)
