@@ -38,7 +38,7 @@ def fetch_data_from_snowflake():
         cur.execute(f"SELECT Title, Price, Rating, Availability FROM {table_name}")
         data = cur.fetchall()
         columns = [x[0] for x in cur.description]
-        df = pd.DataFrame(data, columns=columns)
+        df = pd.DataFrame(data, columns=columns, index= None)
         return df
     except Exception as e:
         st.error(f"Error fetching data: {e}")
@@ -53,13 +53,11 @@ st.title('Coding Challenge 3')
 st.subheader("Varun Rao Chintu")
 
 
-st.write('Data from Snowflake:')
-st.dataframe(df)
-
+st.write('---')
 df['AVAILABILITY'] = df['AVAILABILITY'].apply(map_availability)
 
 
-col1, col2 = st.columns(2)
+col1, col2, col3 = st.columns(3)
 with col1:
     # Create a pie chart for the distribution of ratings
     rating_counts = df['RATING'].value_counts()
@@ -68,15 +66,43 @@ with col1:
     ax.axis('equal')
     st.subheader('Rating Distribution')
     st.pyplot(fig)
+
+
 with col2:
     # Create a pie chart for the distribution of ratings
     availability_counts  = df['AVAILABILITY'].value_counts()
     fig, ax = plt.subplots()
     ax.pie(availability_counts , labels=availability_counts.index, autopct='%1.1f%%')
     ax.axis('equal')
-    st.subheader('AVAILABILITY Distribution')
+    st.subheader('Availability Distribution')
     st.pyplot(fig)
 
+with col3:
+    average_rating = df['RATING'].mean()
+    st.subheader("Average Rating")
+    st.markdown(
+        f"""
+        <div style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; background-color: #f0f0f0;">
+            {average_rating}
+        </div>
+        """, 
+        unsafe_allow_html=True
+    )
+    average_price = df['PRICE'].mean()
+    st.subheader("Average Price")
+    st.markdown(
+        f"""
+        <div style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; background-color: #f0f0f0;">
+            {average_price}
+        </div>
+        """, 
+        unsafe_allow_html=True
+    )
+st.write('---')
 rated_5_books = df[df['RATING'] == 5]
 st.subheader('Books with Rating 5')
 st.dataframe(rated_5_books[['TITLE', 'PRICE', 'RATING', 'AVAILABILITY']])
+st.write('---')
+top_10_expensive_books = df.nlargest(10, 'PRICE')
+st.subheader('Top 10 Most Expensive Books')
+st.dataframe(top_10_expensive_books[['TITLE', 'PRICE', 'RATING', 'AVAILABILITY']])
